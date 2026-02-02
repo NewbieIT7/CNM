@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ Thống Quản Lý</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f5f7fa; font-family: 'Inter', sans-serif; padding-top: 50px; }
+        .main-box { background: #ffffff; border-radius: 12px; padding: 35px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .img-thumb { border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
+        .search-bar { border-radius: 20px; padding: 10px 20px; border: 1px solid #ddd; width: 100%; }
+        .highlight { background-color: yellow; }
+    </style>
+</head>
+<body class="container">
+    <div class="main-box">
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-3"><h3 class="fw-bold m-0 text-primary">📦 KHO HÀNG</h3></div>
+            <div class="col-md-6">
+                <input id="liveSearch" class="form-control search-bar" placeholder="Gõ để tìm kiếm sản phẩm nhanh...">
+            </div>
+            <div class="col-md-3 text-end">
+                <a href="/products/add" class="btn btn-dark rounded-pill px-4">+ Thêm mới</a>
+            </div>
+        </div>
+
+        <table class="table align-middle" id="productTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Tên chi tiết</th>
+                    <th>Giá ($)</th>
+                    <th class="text-end">Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="productBody">
+                <% products.forEach(p => { %>
+                    <tr class="product-row">
+                        <td><img src="<%= p.img %>" width="60" height="60" class="img-thumb" onerror="this.src='https://via.placeholder.com/60'"></td>
+                        <td class="product-name fw-bold"><%= p.name %></td>
+                        <td class="text-primary fw-bold">$<%= p.price %></td>
+                        <td class="text-end">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="/products/edit/<%= p.id %>" class="btn btn-outline-secondary btn-sm rounded-pill">Sửa</a>
+                                <form action="/products/delete/<%= p.id %>" method="POST" onsubmit="return confirm('Xóa?')">
+                                    <button class="btn btn-outline-danger btn-sm rounded-pill">Xóa</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('liveSearch').addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.product-row');
+
+            rows.forEach(row => {
+                const name = row.querySelector('.product-name').textContent.toLowerCase();
+                if (name.includes(filter)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
